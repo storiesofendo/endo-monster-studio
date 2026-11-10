@@ -1,0 +1,41 @@
+# ENDO-MONSTER puppet pieces
+
+Reference picture: `reference.png` (put it in this folder).
+`body` is drawn from the reference; every other piece is an edit of `raw/body.png`.
+neutral face = body, closed mouth = body.
+
+## raw/body.png  (from reference)
+
+Redraw the character in the attached reference picture (ENDO-MONSTER: The grumpy little monster who lives in Petunia's tummy and makes it hurt. Silly-scary, never truly frightening for kids.) as the exact same character - identical face shape, proportions, colors, hair, outfit and line style. Full body, standing, facing the viewer, arms relaxed, the whole figure visible from head to toe with a small margin, centered. Calm neutral expression, eyes open looking at the viewer, mouth gently closed. Plain transparent background, no shadow, no props, no text. Style: Soft hand-painted children's picture-book illustration, watercolor and gouache texture. Gentle rounded shapes, warm pastel palette (rose pinks, soft teal, butter yellow), clean dark outlines on characters. Backgrounds are painterly and slightly less saturated than the characters so the characters pop. Friendly, cozy, never scary. Suitable for ages 4-9.
+
+## raw/face_happy.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the face to show a big warm happy smile and cheerful, smiling eyes. Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/face_sad.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the face to show a sad face: eyebrows tilted up in the middle, droopy eyes, a small frown. Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/face_worried.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the face to show a worried face: worried eyebrows pinched together, wide nervous eyes, a wobbly little mouth. Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/face_surprised.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the face to show a surprised face: eyebrows raised high, eyes wide open, a small round open mouth. Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/face_hurting.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the face to show a face in tummy pain, kid-friendly: eyes squeezed half shut, scrunched eyebrows, a grimace. Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/mouth_small.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the mouth so it is slightly open, as if saying 'eh' (a small gap, teeth barely showing). The eyes and eyebrows stay exactly as they are (neutral). Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/mouth_open.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the mouth so it is wide open, as if saying 'ah' (tongue visible). The eyes and eyebrows stay exactly as they are (neutral). Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.
+
+## raw/mouth_round.png  (from body)
+
+Edit this picture of ENDO-MONSTER. Change ONLY the mouth so it is a small round 'oo' shape, lips pushed forward. The eyes and eyebrows stay exactly as they are (neutral). Keep EVERYTHING else pixel-identical: same body, pose, outfit, head position and tilt, size, framing, colors, outline thickness and painting style. Transparent background, no shadow, no text.

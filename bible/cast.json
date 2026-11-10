@@ -1,0 +1,62 @@
+{
+  "characters": {
+    "NARRATOR": {
+      "on_screen": false,
+      "role": "Warm, gentle storyteller who reads the book aloud.",
+      "voice": {
+        "voice_id": null,
+        "gender": "male",
+        "hint": "warm calm male storyteller, friendly, audiobook narration"
+      }
+    },
+    "PETUNIA": {
+      "on_screen": true,
+      "role": "The little girl the book is about. Lives with endometriosis pain in her tummy; brave, curious, honest about how she feels.",
+      "look": "Exactly as drawn in bible/characters/PETUNIA/reference.png.",
+      "height": 0.62,
+      "voice": {
+        "voice_id": null,
+        "gender": "female",
+        "hint": "young girl, bright, expressive, child"
+      }
+    },
+    "FRIEND": {
+      "on_screen": true,
+      "role": "Petunia's best friend. Kind, a little silly, always believes her.",
+      "look": "Exactly as drawn in bible/characters/FRIEND/reference.png.",
+      "height": 0.6,
+      "voice": {
+        "voice_id": null,
+        "gender": "",
+        "hint": "young child, cheerful, playful"
+      }
+    },
+    "MOM": {
+      "on_screen": true,
+      "role": "Petunia's mom. Calm, loving, listens and takes her seriously.",
+      "look": "Exactly as drawn in bible/characters/MOM/reference.png.",
+      "height": 0.86,
+      "voice": {
+        "voice_id": null,
+        "gender": "female",
+        "hint": "warm caring mother, soft, reassuring"
+      }
+    },
+    "ENDO-MONSTER": {
+      "on_screen": true,
+      "role": "The grumpy little monster who lives in Petunia's tummy and makes it hurt. Silly-scary, never truly frightening for kids.",
+      "look": "Exactly as drawn in bible/characters/ENDO-MONSTER/reference.png.",
+      "height": 0.4,
+      "voice": {
+        "voice_id": null,
+        "gender": "",
+        "hint": "grumbly gravelly cartoon monster, funny, raspy"
+      },
+      "head_fraction": 0.7
+    }
+  },
+  "lip_sync": {
+    "fps": 24,
+    "min_hold_frames": 2
+  }
+}
