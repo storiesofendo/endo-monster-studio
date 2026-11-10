@@ -1,0 +1,36 @@
+{
+  "name": "MOM",
+  "canvas": [
+    307,
+    775
+  ],
+  "figure_box": [
+    12,
+    0,
+    295,
+    770
+  ],
+  "head_box": [
+    12,
+    0,
+    295,
+    346
+  ],
+  "faces": {
+    "neutral": null
+  },
+  "mouths": {
+    "closed": null
+  },
+  "notes": [
+    "face_happy missing (uses neutral)",
+    "face_sad missing (uses neutral)",
+    "face_worried missing (uses neutral)",
+    "face_surprised missing (uses neutral)",
+    "face_hurting missing (uses neutral)",
+    "face_blink missing (uses neutral)",
+    "mouth_small missing (uses closed)",
+    "mouth_open missing (uses closed)",
+    "mouth_round missing (uses closed)"
+  ]
+}

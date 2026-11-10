@@ -22,8 +22,8 @@
     },
     "FRIEND": {
       "on_screen": true,
-      "role": "Petunia's best friend. Kind, a little silly, always believes her.",
-      "look": "Exactly as drawn in bible/characters/FRIEND/reference.png.",
+      "role": "This episode's guest Endo Warrior: a new friend in every episode who also lives with endo (or supports someone who does) and shares one brave trick for handling it. Kind, funny, believes Petunia right away.",
+      "look": "Changes every episode: put this episode's guest drawing in bible/characters/FRIEND/reference.png.",
       "height": 0.6,
       "voice": {
         "voice_id": null,
@@ -66,7 +66,7 @@
     },
     "ENDO-MONSTER": {
       "on_screen": true,
-      "role": "The grumpy little monster who lives in Petunia's tummy and makes it hurt. Silly-scary, never truly frightening for kids.",
+      "role": "The sneaky, mischievous Endo-Monster who lives in Petunia's tummy. He sneaks in, peeks around corners, and tries to spoil fun with tummy twists, then gets foiled when Petunia and her friends speak up and use their brave tricks. Silly-sneaky, never truly frightening; kids can spot him before the characters do.",
       "look": "Exactly as drawn in bible/characters/ENDO-MONSTER/reference.png (book painting style, NOT the 3D sheet): furry, left half red, right half purple, big droopy ears, small horns, orange eyes, fangs, claws.",
       "height": 0.6,
       "voice": {

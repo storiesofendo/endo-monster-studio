@@ -1,18 +1,26 @@
 TITLE: There's an Endo-Monster in My Tummy!
 # Draft episode 1. Replace lines with the book's words; keep the format.
+# FRIEND is this episode's guest Endo Warrior.
 
-SCENE puddle: PETUNIA left, FRIEND right
+SCENE puddle: PETUNIA left, FRIEND right, ENDO-MONSTER farright
 NARRATOR: This is Petunia. Petunia loves jumping in puddles.
+@PETUNIA hop
 PETUNIA [happy]: Splash! Watch this one, it's a big one!
 FRIEND [happy]: Ha! You got my boots all wet!
+@ENDO-MONSTER peek right
+NARRATOR: But someone sneaky was watching.
+@ENDO-MONSTER sneak right
+@PETUNIA shake
 PETUNIA [hurting]: Ow. Ow, ow. My tummy hurts again.
 FRIEND [worried]: Again? Do you want to sit down?
-SCENE puddle: PETUNIA left, ENDO-MONSTER center, FRIEND right
 ENDO-MONSTER [happy]: Hee hee! That was me! I'm the Endo-Monster, and I live in your tummy!
 @FRIEND [surprised]
 PETUNIA [surprised]: You're the one who makes it hurt?
 ENDO-MONSTER [neutral]: Squeeze, twist, grumble. That's my job!
-FRIEND [worried]: Petunia, you should tell your mom.
+FRIEND [neutral]: I have an Endo-Monster too. My brave trick is telling a grown-up right away.
+PETUNIA [neutral]: Then that's what I'll do.
+ENDO-MONSTER [sad]: Oh, rats. Not the grown-ups!
+@ENDO-MONSTER exit right
 
 SCENE kitchen: MOM left, PETUNIA right
 NARRATOR: That night, Petunia told her mom everything.
@@ -21,9 +29,10 @@ MOM [worried]: Thank you for telling me, sweetheart. I believe you.
 MOM [neutral]: Tomorrow we'll go see a doctor who knows about tummy monsters.
 
 SCENE doctor: MOM farleft, PETUNIA left, DR-SALEM right
+@DR-SALEM enter right
 NARRATOR: Doctor Salem listened to every word.
 DR-SALEM [happy]: Hello, Petunia. Tell me all about this monster.
 PETUNIA [neutral]: Will the Endo-Monster go away?
-MOM [happy]: We're going to learn how to keep him quiet, together.
+DR-SALEM [neutral]: We're going to learn how to keep him quiet, together.
 PETUNIA [happy]: Together. I like that.
 NARRATOR: And that was the start of Petunia's brave adventure.

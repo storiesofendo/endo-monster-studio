@@ -1,0 +1,36 @@
+{
+  "name": "DAD",
+  "canvas": [
+    365,
+    810
+  ],
+  "figure_box": [
+    8,
+    12,
+    353,
+    802
+  ],
+  "head_box": [
+    8,
+    12,
+    353,
+    368
+  ],
+  "faces": {
+    "neutral": null
+  },
+  "mouths": {
+    "closed": null
+  },
+  "notes": [
+    "face_happy missing (uses neutral)",
+    "face_sad missing (uses neutral)",
+    "face_worried missing (uses neutral)",
+    "face_surprised missing (uses neutral)",
+    "face_hurting missing (uses neutral)",
+    "face_blink missing (uses neutral)",
+    "mouth_small missing (uses closed)",
+    "mouth_open missing (uses closed)",
+    "mouth_round missing (uses closed)"
+  ]
+}

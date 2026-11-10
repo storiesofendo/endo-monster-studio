@@ -8,6 +8,7 @@ Script format (episodes/<ep>/script.txt):
     NARRATOR: Once upon a time...
     PETUNIA [happy]: I love puddles!
     @FRIEND [worried]            <- stage direction: change a face without speaking
+    @ENDO-MONSTER sneak left     <- motion: enter/sneak/peek (from left|right), exit (to left|right), hop, shake
     FRIEND [worried]: Are you okay?
 
 Positions: farleft, left, center, right, farright (or a number 0..1).
@@ -77,6 +78,8 @@ class ScriptError(ValueError):
 
 LINE_RE = re.compile(r"^([A-Z][A-Z0-9 _-]*?)\s*(?:\[([a-z]+)\])?\s*:\s*(.+)$")
 DIRECTION_RE = re.compile(r"^@([A-Z][A-Z0-9 _-]*?)\s*\[([a-z]+)\]\s*$")
+MOVE_RE = re.compile(r"^@([A-Z][A-Z0-9 _-]*?)\s+(enter|exit|sneak|peek|hop|shake)s?(?:\s+(?:from\s+|to\s+)?(left|right))?\s*$", re.I)
+MOVES = ["enter", "exit", "sneak", "peek", "hop", "shake"]
 SCENE_RE = re.compile(r"^SCENE\s+([a-z0-9_-]+)\s*(?::\s*(.*))?$", re.I)
 
 
@@ -114,6 +117,17 @@ def parse_script(text, cast=None):
                     continue
                 stage[name] = x
             scenes.append({"bg": m.group(1).lower(), "stage": stage, "events": []})
+            continue
+        m = MOVE_RE.match(line)
+        if m:
+            name = m.group(1).strip().upper()
+            if not scenes:
+                errors.append(f"line {lineno}: motion before any SCENE")
+            elif name not in scenes[-1]["stage"]:
+                errors.append(f"line {lineno}: {name} must be on this SCENE line to move")
+            else:
+                scenes[-1]["events"].append({"type": "move", "char": name, "action": m.group(2).lower(),
+                                             "side": (m.group(3) or "").lower() or None})
             continue
         m = DIRECTION_RE.match(line)
         if m:

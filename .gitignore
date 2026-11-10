@@ -4,3 +4,5 @@ episodes/*/audio/
 episodes/*/samples/
 episodes/*/*.mp4
 episodes/*/frames/
+episodes/*/contact.png
+episodes/*/still_*.png

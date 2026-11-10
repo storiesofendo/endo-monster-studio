@@ -47,6 +47,7 @@ FACE_PROMPTS = {
     "worried": "a worried face: worried eyebrows pinched together, wide nervous eyes, a wobbly little mouth",
     "surprised": "a surprised face: eyebrows raised high, eyes wide open, a small round open mouth",
     "hurting": "a face in tummy pain, kid-friendly: eyes squeezed half shut, scrunched eyebrows, a grimace",
+    "blink": "the eyes gently closed mid-blink (eyelids down), eyebrows and mouth exactly as they are now",
 }
 MOUTH_PROMPTS = {
     "small": "slightly open, as if saying 'eh' (a small gap, teeth barely showing)",
@@ -254,7 +255,9 @@ def draw_placeholder(name, face="neutral", mouth="closed", jitter=(0, 0, 1.0)):
     # eyes + brows by expression
     eye_h = {"surprised": 42, "hurting": 8, "happy": 22}.get(face, 30)
     for sx in (-60, 60):
-        if face == "happy":
+        if face == "blink":
+            d.line([((cx + sx - 22) * S, (cy - 30) * S), ((cx + sx + 22) * S, (cy - 30) * S)], fill=dark, width=lw)
+        elif face == "happy":
             d.arc([(cx + sx - 26) * S, (cy - 50) * S, (cx + sx + 26) * S, (cy - 10) * S], 200, 340, fill=dark, width=lw)
         else:
             e((cx + sx - 22, cy - 30 - eye_h / 2, cx + sx + 22, cy - 30 + eye_h / 2), fill="white", outline=dark, width=lw // 2)
@@ -301,7 +304,7 @@ def cmd_placeholder(args):
         raw = char_dir(name) / "raw"
         raw.mkdir(parents=True, exist_ok=True)
         draw_placeholder(name).save(raw / "body.png")
-        for i, expr in enumerate(e for e in EXPRESSIONS if e != "neutral"):
+        for i, expr in enumerate([e for e in EXPRESSIONS if e != "neutral"] + ["blink"]):
             draw_placeholder(name, face=expr, jitter=(5 - i * 3, i * 2 - 4, 1.0 + 0.008 * (i - 2))).save(raw / f"face_{expr}.png")
         for i, m in enumerate(x for x in MOUTHS if x != "closed"):
             draw_placeholder(name, mouth=m, jitter=(i * 3 - 3, 4 - i * 3, 1.0)).save(raw / f"mouth_{m}.png")
@@ -339,10 +342,10 @@ def remove_background(img, tol=38):
                 ImageDraw.floodfill(m, (x, y), 128)
     clear = np.asarray(m) == 128
     # enclosed paper (between legs, inside a pigtail loop): a tight colour match, so cream clothes stay
-    paper = (np.abs(rgb - bg).sum(axis=2) < 22) & ~clear
+    paper = (np.abs(rgb - bg).sum(axis=2) < 30) & ~clear
     f = 3
     sm = np.asarray(Image.fromarray(paper.astype(np.uint8) * 255).resize((wid // f, hgt // f), Image.BOX)) > 200
-    for area, blob in components(sm, min_area=25):
+    for area, blob in components(sm, min_area=40):
         full = np.asarray(Image.fromarray(blob.astype(np.uint8) * 255).resize((wid, hgt), Image.NEAREST)) > 0
         region = rgb[full & paper]
         if len(region) and region.std(axis=0).mean() < 9:      # flat paper, not textured cloth
@@ -487,7 +490,7 @@ def cmd_pack(args):
         pack = {"name": name, "canvas": list(body.size), "figure_box": list(box), "head_box": head,
                 "faces": {"neutral": None}, "mouths": {"closed": None}, "notes": []}
         mouth_boxes = []
-        for expr in EXPRESSIONS[1:]:
+        for expr in EXPRESSIONS[1:] + ["blink"]:
             p = raw / f"face_{expr}.png"
             if not p.exists():
                 pack["notes"].append(f"face_{expr} missing (uses neutral)")
@@ -668,7 +671,7 @@ def load_background(name):
     for ext in ("png", "jpg", "jpeg", "webp"):
         p = BGS / f"{name}.{ext}"
         if p.exists():
-            return ImageOps.fit(Image.open(p).convert("RGB"), (W, H), Image.LANCZOS)
+            return ImageOps.fit(Image.open(p).convert("RGB"), (W * 2, H * 2), Image.LANCZOS)
     print(f"  warning: no background bible/backgrounds/{name}.png - using a plain stand-in")
     img = Image.new("RGB", (W, H))
     d = ImageDraw.Draw(img)
@@ -679,7 +682,7 @@ def load_background(name):
         c = top if t < 0.7 else bot
         d.line([(0, y), (W, y)], fill=tuple(int(v * (1 - 0.12 * t)) for v in c))
     d.text((W - 20, 20), f"[{name}]", fill=(90, 90, 90), font=font(22, False), anchor="ra")
-    return img
+    return img.resize((W * 2, H * 2), Image.BILINEAR)
 
 
 def decode_audio(path, sr=44100):
@@ -688,8 +691,12 @@ def decode_audio(path, sr=44100):
     return np.frombuffer(raw, np.int16)
 
 
+MOVE_SECS = {"enter": 1.2, "exit": 1.1, "sneak": 2.4, "peek": 2.4, "hop": 0.55, "shake": 0.8}
+BLOCKING = {"enter": 0.8, "exit": 0.6, "sneak": 0.85, "peek": 0.9, "hop": 0.0, "shake": 0.0}
+
+
 def plan_episode(ep, script, cast, fps):
-    """Lay every line on a timeline. Returns (shots, total_seconds)."""
+    """Lay every line and motion on a timeline. Returns (shots, total_seconds)."""
     audio_dir = ep_dir(ep) / "audio"
     t = TITLE_SECS
     shots = []
@@ -699,6 +706,12 @@ def plan_episode(ep, script, cast, fps):
         for e in s["events"]:
             if e["type"] == "face":
                 shot["events"].append({**e, "t": t})
+                continue
+            if e["type"] == "move":
+                dur = MOVE_SECS[e["action"]]
+                side = e["side"] or ("left" if s["stage"][e["char"]] < 0.5 else "right")
+                shot["events"].append({**e, "side": side, "t": t, "dur": dur})
+                t += dur * BLOCKING[e["action"]]
                 continue
             meta_p = audio_dir / f"{e['id']:03d}.json"
             if not meta_p.exists():
@@ -712,43 +725,169 @@ def plan_episode(ep, script, cast, fps):
             t += meta["duration"] + LINE_GAP
         t += SCENE_PAD - LINE_GAP
         shot["end"] = t
+        # camera: wide to open each scene, then close-ups on whoever talks, wide again every few lines
+        n = 0
+        for e in shot["events"]:
+            if e["type"] == "line":
+                on_stage = e["char"] in shot["stage"]
+                e["shot"] = "close" if on_stage and len(shot["stage"]) > 1 and n % 3 != 0 and e["dur"] > 1.4 else "wide"
+                n += 1
         shots.append(shot)
     return shots, t + 0.5
 
 
+def ease(p):
+    p = min(1.0, max(0.0, p))
+    return p * p * (3 - 2 * p)
+
+
+def blink_now(name, t):
+    h = zlib.crc32(name.encode())
+    period = 2.7 + (h % 19) / 10
+    return (t + (h % 97) / 31) % period < 0.13
+
+
 def state_at(shot, t, fps):
-    """Who is on stage, their faces, and who is talking right now."""
+    """Faces, who is talking (and mouth shape), and each character's motion at time t."""
     faces = {c: "neutral" for c in shot["stage"]}
-    talking, mouth = None, None
+    talking, mouth, line = None, None, None
     for e in shot["events"]:
         if e["t"] > t:
             break
         if e["type"] == "face" or e.get("expr"):
             faces[e["char"]] = e["expr"]
         if e["type"] == "line" and t < e["t"] + e["dur"]:
-            talking = e["char"]
+            talking, line = e["char"], e
             f = int((t - e["t"]) * fps)
             mouth = e["mouths"][min(f, len(e["mouths"]) - 1)]
-    return faces, talking, mouth
+    motion = {}
+    for name, x in shot["stage"].items():
+        moves = [e for e in shot["events"] if e["type"] == "move" and e["char"] == name]
+        first = moves[0]["action"] if moves else None
+        st = {"x": x * W, "present": first not in ("enter", "sneak", "peek"), "dy": 0.0, "dx": 0.0,
+              "squash": 1.0, "lean": 0.0, "walk": None}
+        for e in moves:
+            if e["t"] > t:
+                break
+            p = (t - e["t"]) / e["dur"]
+            off = -0.18 * W if e["side"] == "left" else 1.18 * W
+            home = x * W
+            if e["action"] in ("enter", "sneak"):
+                st["present"] = True
+                if p < 1:
+                    st["x"] = off + (home - off) * ease(p)
+                    st["walk"] = e["action"]
+            elif e["action"] == "exit":
+                if p < 1:
+                    st["x"] = home + (off - home) * ease(p)
+                    st["walk"] = "enter"
+                else:
+                    st["present"] = False
+            elif e["action"] == "peek":
+                edge = 0.10 * W if e["side"] == "left" else 0.90 * W
+                if p < 1:
+                    st["present"] = True
+                    k = ease(p / 0.3) if p < 0.3 else (1.0 if p < 0.7 else 1 - ease((p - 0.7) / 0.3))
+                    st["x"] = off + (edge - off) * k
+                    st["walk"] = "sneak" if (p < 0.3 or p > 0.7) else None
+                else:
+                    st["present"] = False
+            elif e["action"] == "hop" and p < 1:
+                st["dy"] -= math.sin(math.pi * min(p / 0.85, 1)) * 0.07 * H
+                if p > 0.85:
+                    st["squash"] = 0.9
+            elif e["action"] == "shake" and p < 1:
+                st["dx"] += math.sin(t * 55) * 5 * (1 - p)
+        motion[name] = st
+    return faces, talking, mouth, line, motion
+
+
+def camera_at(shot, t, line, motion, cast):
+    """(zoom, centre x, centre y) in frame coordinates."""
+    moving = any(m["walk"] for m in motion.values())
+    if line is None or moving or line.get("shot") != "close" or line["char"] not in motion:
+        return 1.0, W / 2, H / 2
+    p = (t - line["t"]) / max(line["dur"], 0.1)
+    z = 1.42 * (1 + 0.035 * ease(p))  # gentle push-in while they talk
+    hpx = H * cast["characters"][line["char"]].get("height", 0.6)
+    cx = motion[line["char"]]["x"]
+    cy = H * GROUND - hpx * 0.72
+    return z, cx, cy
+
+
+def lean_sprite(im, s, box, lean_deg, squash):
+    """Shear (lean) and squash a sprite around its feet. Returns (image, dx, dy) paste offsets."""
+    if abs(lean_deg) < 0.05 and abs(squash - 1) < 0.002:
+        return im, 0, 0
+    k = math.tan(math.radians(lean_deg))
+    sy, sx = squash, 1 / math.sqrt(squash)
+    cx = (box[0] + box[2]) / 2 * s
+    by = box[3] * s
+    m = int(abs(k) * im.height) + 4
+    mt = int(max(0, (sy - 1)) * im.height) + 2
+    w2, h2 = im.width + 2 * m, im.height + mt
+    a, b_ = 1 / sx, k / sx
+    c = cx - (m + cx) / sx - k * (by + mt) / sx
+    e_, f = 1 / sy, by - (mt + by) / sy
+    out = im.transform((w2, h2), Image.AFFINE, (a, b_, c, 0, e_, f), resample=Image.BICUBIC)
+    return out, -m, -mt
 
 
 def render_frame(shot, t, fps, bg, puppets, cast, captions):
-    frame = bg.copy()
-    faces, talking, mouth = state_at(shot, t, fps)
-    for name, x in sorted(shot["stage"].items(), key=lambda kv: cast["characters"][kv[0]].get("height", 0.6)):
+    """bg is the high-res background (2x). Characters are drawn at camera scale so close-ups stay sharp."""
+    faces, talking, mouth, line, motion = state_at(shot, t, fps)
+    z, ccx, ccy = camera_at(shot, t, line, motion, cast)
+    vw, vh = W / z, H / z
+    x0 = min(max(ccx - vw / 2, 0), W - vw)
+    y0 = min(max(ccy - vh / 2, 0), H - vh)
+    k = bg.width / W
+    frame = bg.crop((round(x0 * k), round(y0 * k), round((x0 + vw) * k), round((y0 + vh) * k))).resize((W, H), Image.BILINEAR)
+    zq = round(z * 50) / 50
+    present = [n for n, m in motion.items() if m["present"]]
+    for name in sorted(present, key=lambda n: cast["characters"][n].get("height", 0.6)):
         if name not in puppets:
             continue
-        p = puppets[name]
-        # mouth shape only while speaking; 'closed' while speaking keeps the expression's own mouth
+        p, st = puppets[name], motion[name]
+        expr = faces.get(name, "neutral")
         m = mouth if name == talking and mouth != "closed" else None
-        hpx = round(H * cast["characters"][name].get("height", 0.6))
+        if m is None and expr == "neutral" and "blink" in p.faces and blink_now(name, t) and not st["walk"]:
+            expr = "blink"
+        hpx = round(H * cast["characters"][name].get("height", 0.6) * zq)
+        if len(p._cache) > 400:
+            p._cache.clear()
+        im, s = p.scaled(expr, m, hpx)
         phase = (zlib.crc32(name.encode()) % 100) / 100 * 6.28
-        bob = -abs(math.sin(t * 7.0 + phase)) * 5 if name == talking else math.sin(t * 1.6 + phase) * 1.5
-        im, s = p.scaled(faces.get(name, "neutral"), m, hpx)
+        lean, squash, dy = 0.0, st["squash"], st["dy"]
+        if st["walk"] == "sneak":          # tiptoe: crouched, leaning forward, slow sneaky steps
+            squash *= 0.93
+            dy -= abs(math.sin(t * 5.0 + phase)) * 7
+            lean = 7 if st["x"] < shot["stage"][name] * W else -7
+        elif st["walk"]:                   # bouncy walk
+            dy -= abs(math.sin(t * 9.0 + phase)) * 11
+            lean = 3 if st["x"] < shot["stage"][name] * W else -3
+        elif name == talking:              # lean toward whoever they are talking to, bounce on open vowels
+            others = [motion[o]["x"] for o in present if o != name]
+            target = sum(others) / len(others) if others else W / 2
+            lean = 2.2 * (1 if target > st["x"] else -1) * (0.6 + 0.4 * math.sin(t * 2.1 + phase))
+            dy -= 4 if m == "open" else (2 if m else 0)
+            squash *= 1.012 if m == "open" else 1.0
+        else:                              # breathing
+            squash *= 1 + 0.006 * math.sin(t * 1.7 + phase)
+            lean = 0.6 * math.sin(t * 0.7 + phase)
+        im2, ox, oy = lean_sprite(im, s, p.box, lean, squash)
         fx0, fx1 = p.box[0] * s, p.box[2] * s
-        px = round(x * W - (fx0 + fx1) / 2)
-        py = round(H * GROUND - p.box[3] * s + bob)
-        frame.paste(im, (px, py), im)
+        sx_ = (st["x"] + st["dx"] - x0) * z
+        feet = (H * GROUND - y0) * z
+        # soft contact shadow so they stand on the ground
+        sh_w = (fx1 - fx0) * 0.8
+        lift = max(0.0, -dy) / (0.07 * H * z + 1e-6)
+        shadow = Image.new("L", (int(sh_w) + 20, 40), 0)
+        ImageDraw.Draw(shadow).ellipse((10, 10, 10 + sh_w * (1 - 0.3 * lift), 30), fill=int(90 * (1 - 0.5 * lift)))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(6))
+        frame.paste((30, 20, 25), (round(sx_ - sh_w / 2 - 10), round(feet - 20)), shadow)
+        px = round(sx_ - (fx0 + fx1) / 2 + ox)
+        py = round(feet - p.box[3] * s + dy * z + oy)
+        frame.paste(im2, (px, py), im2)
     if captions:
         for e in shot["events"]:
             if e["type"] == "line" and e["t"] <= t < e["t"] + e["dur"] + LINE_GAP * 0.8:
@@ -774,6 +913,7 @@ def draw_caption(frame, text):
 
 
 def title_frame(bg, title, t):
+    bg = bg.resize((W, H), Image.BILINEAR)
     frame = bg.filter(ImageFilter.GaussianBlur(6))
     fade = min(1.0, t / 0.6, max(0.0, (TITLE_SECS - t) / 0.6))
     overlay = Image.new("RGB", (W, H), (255, 240, 245))
