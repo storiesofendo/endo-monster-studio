@@ -6,3 +6,6 @@ episodes/*/*.mp4
 episodes/*/frames/
 episodes/*/contact.png
 episodes/*/still_*.png
+
+studio3d/characters/*.blend
+studio3d/characters/*.blend1
