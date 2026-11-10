@@ -12,10 +12,10 @@
     "PETUNIA": {
       "on_screen": true,
       "role": "The little girl the book is about. Lives with endometriosis pain in her tummy; brave, curious, honest about how she feels.",
-      "look": "Exactly as drawn in bible/characters/PETUNIA/reference.png.",
-      "height": 0.62,
+      "look": "Exactly as drawn in bible/characters/PETUNIA/reference.png and bible/sheets/PETUNIA_sheet.png: curly brown pigtails with magenta ties, freckles, gap tooth, magenta/lavender overalls with teal pocket, yellow tee, yellow socks, plum sneakers.",
+      "height": 0.7,
       "voice": {
-        "voice_id": null,
+        "voice_id": "YnXziUJmY9NsJ5JNgOR6",
         "gender": "female",
         "hint": "young girl, bright, expressive, child"
       }
@@ -34,25 +34,47 @@
     "MOM": {
       "on_screen": true,
       "role": "Petunia's mom. Calm, loving, listens and takes her seriously.",
-      "look": "Exactly as drawn in bible/characters/MOM/reference.png.",
-      "height": 0.86,
+      "look": "Exactly as drawn in bible/characters/MOM/reference.png: curly shoulder-length hair, gold hoops, freckles, plum cardigan, dark jeans cuffed, yellow socks, cream sneakers.",
+      "height": 0.81,
       "voice": {
-        "voice_id": null,
+        "voice_id": "1hJOA1O9s18kQsqo8ZL8",
         "gender": "female",
         "hint": "warm caring mother, soft, reassuring"
+      }
+    },
+    "DAD": {
+      "on_screen": true,
+      "role": "Petunia's dad. Big-hearted, playful, brings fruit bowls and the heating pad, always makes her laugh.",
+      "look": "Exactly as drawn in bible/characters/DAD/reference.png: short curly hair, beard, olive shirt-jacket over cream tee, dark jeans cuffed, mustard sneakers.",
+      "height": 0.87,
+      "voice": {
+        "voice_id": null,
+        "gender": "male",
+        "hint": "warm friendly dad, gentle, playful"
+      }
+    },
+    "DR-SALEM": {
+      "on_screen": true,
+      "role": "Petunia's doctor. Kind, curious, explains endometriosis simply with picture books and listens carefully.",
+      "look": "Exactly as drawn in bible/characters/DR-SALEM/reference.png: long wavy dark hair with a silver streak, round glasses, cream lab coat, teal blouse, charcoal trousers, plum shoes.",
+      "height": 0.81,
+      "voice": {
+        "voice_id": "SxLhzlOplCG52gMdYD7g",
+        "gender": "female",
+        "hint": "kind calm female doctor"
       }
     },
     "ENDO-MONSTER": {
       "on_screen": true,
       "role": "The grumpy little monster who lives in Petunia's tummy and makes it hurt. Silly-scary, never truly frightening for kids.",
-      "look": "Exactly as drawn in bible/characters/ENDO-MONSTER/reference.png.",
-      "height": 0.4,
+      "look": "Exactly as drawn in bible/characters/ENDO-MONSTER/reference.png (book painting style, NOT the 3D sheet): furry, left half red, right half purple, big droopy ears, small horns, orange eyes, fangs, claws.",
+      "height": 0.6,
       "voice": {
-        "voice_id": null,
+        "voice_id": "PMOAYggvZmjW1kAs7Fbw",
         "gender": "",
         "hint": "grumbly gravelly cartoon monster, funny, raspy"
       },
-      "head_fraction": 0.7
+      "head_fraction": 0.42
     }
   },
   "lip_sync": {

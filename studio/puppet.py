@@ -189,6 +189,11 @@ def cmd_generate(args):
                 continue
             if p["from"] == "body" and not (d / "raw" / "body.png").exists():
                 sys.exit(f"{name}: body.png is missing; generate it first")
+            if p["piece"] == "body" and not args.redraw_body:
+                # Your drawn front view IS the body: zero drift. (--redraw-body asks the image service instead.)
+                Image.open(ref).convert("RGB").save(out)
+                print(f"  {name}/body: using your reference drawing as the body")
+                continue
             src = [ref] if p["from"] == "reference" else [d / "raw" / "body.png"]
             print(f"  {name}/{p['piece']}: drawing...", flush=True)
             openai_image(p["prompt"], src, "1024x1536", transparent=True).save(out)
@@ -306,29 +311,65 @@ def cmd_placeholder(args):
 # ---------------------------------------------------------------- pack: clean, line up, cut patches
 
 def remove_background(img, tol=38):
-    """Return RGBA. Keeps real transparency; otherwise removes the flat page colour touching the border."""
+    """Return RGBA. Keeps real transparency; otherwise removes the paper colour touching the border,
+    the soft ground smudge drawn under the feet, and stray marks (sparkles, labels) not touching the figure."""
     img = img.convert("RGBA")
     a = np.asarray(img)
     if (a[..., 3] < 250).mean() > 0.02:
-        return img
+        return keep_main_figure(img)
     rgb = a[..., :3].astype(int)
     border = np.concatenate([rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1]])
     bg = np.median(border, axis=0)
-    near = (np.abs(rgb - bg).sum(axis=2) < tol).astype(np.uint8) * 255
-    m = Image.fromarray(near, "L").copy()  # copy: Pillow will not flood-fill an array-backed image
+    near = np.abs(rgb - bg).sum(axis=2) < tol
     hgt, wid = near.shape
-    for x in range(0, wid, max(1, wid // 20)):
+    # ground smudge: the pale lavender patch painted under the feet (bottom 15% only)
+    band = np.zeros_like(near)
+    band[int(hgt * 0.85):] = True
+    r_, g_, b_ = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    lavender = (b_ > g_ + 12) & (r_ > g_ - 5) & (rgb.mean(axis=2) > 135)
+    near |= band & lavender
+    m = Image.fromarray(near.astype(np.uint8) * 255, "L").copy()  # copy: Pillow won't flood-fill array-backed images
+    for x in range(0, wid, max(1, wid // 40)):
         for y in (0, hgt - 1):
             if m.getpixel((x, y)) == 255:
                 ImageDraw.floodfill(m, (x, y), 128)
-    for y in range(0, hgt, max(1, hgt // 20)):
+    for y in range(0, hgt, max(1, hgt // 40)):
         for x in (0, wid - 1):
             if m.getpixel((x, y)) == 255:
                 ImageDraw.floodfill(m, (x, y), 128)
-    alpha = Image.fromarray(np.where(np.asarray(m) == 128, 0, 255).astype(np.uint8), "L")
+    clear = np.asarray(m) == 128
+    # enclosed paper (between legs, inside a pigtail loop): a tight colour match, so cream clothes stay
+    paper = (np.abs(rgb - bg).sum(axis=2) < 22) & ~clear
+    f = 3
+    sm = np.asarray(Image.fromarray(paper.astype(np.uint8) * 255).resize((wid // f, hgt // f), Image.BOX)) > 200
+    for area, blob in components(sm, min_area=25):
+        full = np.asarray(Image.fromarray(blob.astype(np.uint8) * 255).resize((wid, hgt), Image.NEAREST)) > 0
+        region = rgb[full & paper]
+        if len(region) and region.std(axis=0).mean() < 9:      # flat paper, not textured cloth
+            clear |= np.asarray(Image.fromarray((full & paper).astype(np.uint8) * 255)
+                                .filter(ImageFilter.MaxFilter(3))) > 0
+    alpha = Image.fromarray(np.where(clear, 0, 255).astype(np.uint8), "L")
     alpha = alpha.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
     img.putalpha(alpha)
-    return img
+    return keep_main_figure(img)
+
+
+def keep_main_figure(img):
+    """Drop small separate blobs (sparkle marks, label letters) that are not part of the figure."""
+    al = np.asarray(img.getchannel("A")) > 40
+    f = 4
+    small = np.asarray(Image.fromarray(al.astype(np.uint8) * 255).resize(
+        (max(1, al.shape[1] // f), max(1, al.shape[0] // f)), Image.BOX)) > 60
+    blobs = components(small, min_area=1)
+    if len(blobs) < 2:
+        return img
+    biggest = blobs[0][0]
+    keep = np.any([b for area, b in blobs if area >= biggest * 0.05], axis=0)
+    keep = np.asarray(Image.fromarray(keep.astype(np.uint8) * 255).resize(img.size, Image.NEAREST)
+                      .filter(ImageFilter.MaxFilter(2 * f + 1)))
+    out = img.copy()
+    out.putalpha(ImageChops.multiply(img.getchannel("A"), Image.fromarray(keep)))
+    return out
 
 
 def alpha_bbox(img):
@@ -840,7 +881,9 @@ def main():
     sub = p.add_subparsers(dest="cmd", required=True)
     s = sub.add_parser("prompts"); s.add_argument("char", nargs="?", default="all"); s.set_defaults(f=cmd_prompts)
     s = sub.add_parser("generate"); s.add_argument("char"); s.add_argument("--only", nargs="*")
-    s.add_argument("--force", action="store_true"); s.set_defaults(f=cmd_generate)
+    s.add_argument("--force", action="store_true")
+    s.add_argument("--redraw-body", action="store_true", help="have the image service redraw the body too")
+    s.set_defaults(f=cmd_generate)
     s = sub.add_parser("placeholder"); s.add_argument("char", nargs="?", default="all"); s.set_defaults(f=cmd_placeholder)
     s = sub.add_parser("pack"); s.add_argument("char", nargs="?", default="all"); s.set_defaults(f=cmd_pack)
     s = sub.add_parser("lineup"); s.set_defaults(f=cmd_lineup)

@@ -20,8 +20,9 @@ PETUNIA [sad]: Mom, there's a monster in my tummy, and it hurts a lot.
 MOM [worried]: Thank you for telling me, sweetheart. I believe you.
 MOM [neutral]: Tomorrow we'll go see a doctor who knows about tummy monsters.
 
-SCENE doctor: MOM left, PETUNIA right
-NARRATOR: The doctor listened to every word.
+SCENE doctor: MOM farleft, PETUNIA left, DR-SALEM right
+NARRATOR: Doctor Salem listened to every word.
+DR-SALEM [happy]: Hello, Petunia. Tell me all about this monster.
 PETUNIA [neutral]: Will the Endo-Monster go away?
 MOM [happy]: We're going to learn how to keep him quiet, together.
 PETUNIA [happy]: Together. I like that.
