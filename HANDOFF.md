@@ -37,7 +37,10 @@ future cartoons):
   ENDO-MONSTER (3D-style sheet). `bible/cast.json`: characters, heights, roles, and every ElevenLabs voice ID (typed in by the owner):
   PETUNIA, MOM, DAD, DR-SALEM, NURSE-MINDY, NARRATOR, ENDO-MONSTER. FRIEND is a new guest each episode (no voice yet).
   Verify each ID against her account (free: GET /v1/voices/{id}) before the first voicing.
-- `episodes/ep01/script.txt`: full ~15 min draft of Episode 1 (4 parts, 3 `BREAK`s), awaiting her notes.
+- `episodes/ep01/script.txt`: Episode 1, **approved and locked** (113 lines, 4 parts, 3 `BREAK`s).
+  **All 113 lines are voiced** (`episodes/ep01/audio/`, keyed by speaker + words; ~2,400 credits actually used).
+  `ep01_audio.mp3` (10:48), `ep01_captions.srt`, `ep01_chapters.txt` (YouTube chapters + ad-break times) via `studio.py mixdown`.
+  Use these recordings for the 3D episode: never re-voice unchanged lines.
 - `studio/studio.py`: new / check / write / approve / estimate / voices (ElevenLabs, timestamps for lip-sync).
 - `studio/server.py`: local web app (episodes, script editor, approve, voice with cost confirm, build).
 - `studio3d/`: Blender helpers + a code-built Petunia. **She rejected that look ("Robot Chicken")**:
