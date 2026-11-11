@@ -4,7 +4,8 @@
     python3 studio/studio.py new ep02 "Petunia Goes to School"
     python3 studio/studio.py write ep02 --premise "Petunia explains endo to her class"
     python3 studio/studio.py check ep01            # validate a script
-    python3 studio/studio.py voices ep01           # make every line's audio + lip-sync timing
+    python3 studio/studio.py approve ep01          # lock the agreed script (shows the voice cost)
+    python3 studio/studio.py voices ep01 --yes     # voice it ONCE: only lines without a recording
     python3 studio/studio.py voices ep01 --offline # silent stand-in audio (no key needed)
     python3 studio/studio.py samples ep01          # one line per character, for approval
     python3 studio/studio.py cast                  # list ElevenLabs voices and who uses which
@@ -19,8 +20,8 @@ import sys
 import time
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent))
-from common import (EXPRESSIONS, BIBLE, ScriptError, all_lines, ep_dir, load_cast,  # noqa: E402
-                    load_episode, need_key, parse_script, save_cast)
+from common import (EXPRESSIONS, BIBLE, ScriptError, all_lines, approval_state, ep_dir, line_key,  # noqa: E402
+                    load_cast, load_episode, need_key, parse_script, save_cast, script_fingerprint)
 
 ELEVEN = "https://api.elevenlabs.io/v1"
 TTS_MODEL = "eleven_multilingual_v2"
@@ -190,23 +191,72 @@ def offline_line(text, path):
     return {"chars": list(text), "starts": starts, "ends": [s + step for s in starts]}
 
 
+CREDITS_PER_CHAR = 1.0   # ElevenLabs multilingual v2: about 1 credit per character of text
+
+
+def lines_needing_voice(ep, lines):
+    out = ep_dir(ep) / "audio"
+    need = []
+    for ln in lines:
+        meta = out / f"{line_key(ln)}.json"
+        if not meta.exists() or json.loads(meta.read_text()).get("offline"):
+            need.append(ln)
+    return need
+
+
+def cmd_approve(args):
+    d = ep_dir(args.ep)
+    script = load_episode(args.ep)          # refuses to approve a script with problems
+    (d / "approved.json").write_text(json.dumps({
+        "fingerprint": script_fingerprint((d / "script.txt").read_text()),
+        "approved_at": time.strftime("%Y-%m-%d %H:%M"), "title": script["title"]}, indent=1))
+    print(f"Approved and locked: \"{script['title']}\" ({len(all_lines(script))} lines).")
+    cmd_estimate(args)
+
+
+def cmd_estimate(args):
+    script = load_episode(args.ep)
+    lines = all_lines(script)
+    need = lines_needing_voice(args.ep, lines)
+    chars = sum(len(ln["text"]) for ln in need)
+    credits = round(chars * CREDITS_PER_CHAR)
+    print(f"Lines already voiced: {len(lines) - len(need)} of {len(lines)}")
+    print(f"Lines to voice now: {len(need)}  ({chars} characters)")
+    print(f"Estimated ElevenLabs cost: about {credits:,} credits")
+    return credits
+
+
 def cmd_voices(args):
     script = load_episode(args.ep)
     cast = load_cast()
     lines = all_lines(script)
     if args.only:
         lines = [ln for ln in lines if ln["char"] in {o.upper() for o in args.only}]
-    if not args.offline:
-        ensure_voices(cast, sorted({ln["char"] for ln in lines}))
     out = ep_dir(args.ep) / "audio"
     out.mkdir(exist_ok=True)
-    for ln in lines:
-        mp3 = out / f"{ln['id']:03d}.mp3"
-        meta = out / f"{ln['id']:03d}.json"
-        if mp3.exists() and meta.exists() and not args.force:
-            old = json.loads(meta.read_text())
-            if old.get("text") == ln["text"] and old.get("char") == ln["char"] and old.get("offline") == args.offline:
-                continue
+    if args.force:
+        for ln in lines:
+            for ext in ("mp3", "json"):
+                (out / f"{line_key(ln)}.{ext}").unlink(missing_ok=True)
+    if not args.offline:
+        state, _ = approval_state(args.ep)
+        if state != "approved":
+            sys.exit("This script isn't approved yet" + (" (it changed after approval)" if state == "changed" else "")
+                     + f". Approve it first:  studio.py approve {args.ep}")
+        credits = cmd_estimate(args)
+        if credits == 0:
+            print("Nothing to voice - every line already has its recording.")
+            return
+        if not args.yes:
+            print("Not spending anything. Run again with --yes to voice these lines.")
+            return
+        ensure_voices(cast, sorted({ln["char"] for ln in lines}))
+    todo = lines if args.offline else lines_needing_voice(args.ep, lines)
+    for ln in todo:
+        key = line_key(ln)
+        mp3, meta = out / f"{key}.mp3", out / f"{key}.json"
+        if args.offline and meta.exists():
+            continue
         if args.offline:
             align = offline_line(ln["text"], mp3)
             voice_id = None
@@ -217,8 +267,8 @@ def cmd_voices(args):
         meta.write_text(json.dumps({"char": ln["char"], "text": ln["text"], "voice_id": voice_id,
                                     "offline": args.offline, "duration": audio_duration(mp3),
                                     "alignment": align}, indent=1))
-        print(f"  {mp3.name}  {ln['char']}: {ln['text'][:60]}")
-    print(f"Voices done: {len(lines)} lines in {out}")
+        print(f"  {ln['char']}: {ln['text'][:60]}")
+    print(f"Voices done ({len(todo)} lines made) in {out}")
 
 
 def cmd_samples(args):
@@ -228,9 +278,9 @@ def cmd_samples(args):
     dst.mkdir(exist_ok=True)
     seen = {}
     for ln in all_lines(script):
-        if ln["char"] not in seen and (src / f"{ln['id']:03d}.mp3").exists():
+        if ln["char"] not in seen and (src / f"{line_key(ln)}.mp3").exists():
             seen[ln["char"]] = ln
-            shutil.copy(src / f"{ln['id']:03d}.mp3", dst / f"{ln['char']}.mp3")
+            shutil.copy(src / f"{line_key(ln)}.mp3", dst / f"{ln['char']}.mp3")
             print(f"  {dst / (ln['char'] + '.mp3')}  \"{ln['text']}\"")
     if not seen:
         sys.exit("No audio yet; run voices first.")
@@ -265,7 +315,10 @@ def main():
     s = sub.add_parser("check"); s.add_argument("ep"); s.set_defaults(f=cmd_check)
     s = sub.add_parser("write"); s.add_argument("ep"); s.add_argument("--premise", required=True); s.set_defaults(f=cmd_write)
     s = sub.add_parser("voices"); s.add_argument("ep"); s.add_argument("--offline", action="store_true")
-    s.add_argument("--force", action="store_true"); s.add_argument("--only", nargs="*"); s.set_defaults(f=cmd_voices)
+    s.add_argument("--force", action="store_true"); s.add_argument("--only", nargs="*")
+    s.add_argument("--yes", action="store_true", help="actually spend ElevenLabs credits"); s.set_defaults(f=cmd_voices)
+    s = sub.add_parser("approve"); s.add_argument("ep"); s.set_defaults(f=cmd_approve)
+    s = sub.add_parser("estimate"); s.add_argument("ep"); s.set_defaults(f=cmd_estimate)
     s = sub.add_parser("samples"); s.add_argument("ep"); s.set_defaults(f=cmd_samples)
     s = sub.add_parser("cast"); s.set_defaults(f=cmd_cast)
     s = sub.add_parser("setvoice"); s.add_argument("char"); s.add_argument("voice_id"); s.set_defaults(f=cmd_setvoice)

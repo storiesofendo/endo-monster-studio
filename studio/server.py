@@ -18,7 +18,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import BIBLE, EPISODES, ROOT, ScriptError, parse_script  # noqa: E402
+from common import BIBLE, EPISODES, ROOT, ScriptError, approval_state, line_key, parse_script  # noqa: E402
 
 PORT = int(os.environ.get("PORT", "8765"))
 STUDIO = Path(__file__).resolve().parent
@@ -44,7 +44,9 @@ def run_job(label, cmd):
 def episode_info(ep):
     d = EPISODES / ep
     script = d / "script.txt"
-    info = {"id": ep, "title": ep, "lines": 0, "voiced": 0, "video": None, "problems": None}
+    state, when = approval_state(ep)
+    info = {"id": ep, "title": ep, "lines": 0, "voiced": 0, "video": None, "problems": None,
+            "approval": state, "approved_at": when}
     if script.exists():
         try:
             s = parse_script(script.read_text())
@@ -52,8 +54,8 @@ def episode_info(ep):
             lines = [e for sc in s["scenes"] for e in sc["events"] if e["type"] == "line"]
             info["lines"] = len(lines)
             for ln in lines:
-                m = d / "audio" / f"{ln['id']:03d}.json"
-                if m.exists() and json.loads(m.read_text()).get("text") == ln["text"]:
+                m = d / "audio" / f"{line_key(ln)}.json"
+                if m.exists() and not json.loads(m.read_text()).get("offline"):
                     info["voiced"] += 1
         except ScriptError as e:
             info["problems"] = str(e)
@@ -162,6 +164,14 @@ class Handler(BaseHTTPRequestHandler):
             r = subprocess.run([sys.executable, str(STUDIO / "studio.py"), "new", ep, data.get("title") or ep],
                                cwd=ROOT, capture_output=True, text=True)
             return self.send_json({"ok": r.returncode == 0, "log": r.stdout + r.stderr}, 200 if r.returncode == 0 else 400)
+        m = re.fullmatch(r"/api/episodes/([^/]+)/(approve|estimate)", path)
+        if m and self.ep_or_404(m.group(1)):
+            r = subprocess.run([sys.executable, str(STUDIO / "studio.py"), m.group(2), m.group(1)],
+                               cwd=ROOT, capture_output=True, text=True)
+            credits = re.search(r"about ([\d,]+) credits", r.stdout)
+            return self.send_json({"ok": r.returncode == 0, "log": r.stdout + r.stderr,
+                                   "credits": int(credits.group(1).replace(",", "")) if credits else None},
+                                  200 if r.returncode == 0 else 400)
         m = re.fullmatch(r"/api/episodes/([^/]+)/(write|voices|build)", path)
         if not m or not self.ep_or_404(m.group(1)):
             return self.send_json({"error": "not found"}, 404)
@@ -172,7 +182,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json({"error": "Give a premise"}, 400)
             job = run_job(f"Write {ep}", [str(STUDIO / "studio.py"), "write", ep, "--premise", premise])
         elif action == "voices":
-            cmd = [str(STUDIO / "studio.py"), "voices", ep] + (["--offline"] if data.get("offline") else [])
+            cmd = [str(STUDIO / "studio.py"), "voices", ep] + (["--offline"] if data.get("offline") else
+                                                                ["--yes"] if data.get("confirmed") else [])
             job = run_job(f"Voices {ep}", cmd)
         else:
             cmd = [str(STUDIO / "puppet.py"), "build", ep] + (["--captions"] if data.get("captions") else [])
@@ -243,7 +254,9 @@ async function open(id){cur=id;const [list,s]=await Promise.all([load(),api(`/ap
  $('#detail').innerHTML=`<h2>${esc(e.title)} <span class="small">(${id})</span></h2>
   <div class="row"><input id="premise" placeholder="Premise for Claude to write this episode"><button id="write">Write script</button></div>
   <textarea id="script" spellcheck="false"></textarea>
+  <div class="row"><span class="small" id="appr">${e.approval==='approved'?'&#10003; Approved '+esc(e.approved_at||''):e.approval==='changed'?'Changed since approval: approve again':'Not approved yet'}</span></div>
   <div class="row"><button class="ghost" id="save">Save script</button>
+   <button class="ghost" id="approve">Approve script</button>
    <button id="voices">Make voices</button><label class="small"><input type="checkbox" id="offline" style="width:auto"> silent test voices</label>
    <button id="build">Build video</button><label class="small"><input type="checkbox" id="captions" style="width:auto"> captions</label></div>
   <div id="msg" class="err small">${e.problems?esc(e.problems):''}</div>
@@ -252,7 +265,16 @@ async function open(id){cur=id;const [list,s]=await Promise.all([load(),api(`/ap
  $('#script').value=s.script;
  $('#save').onclick=save;
  $('#write').onclick=()=>job(`/api/episodes/${id}/write`,{premise:$('#premise').value});
- $('#voices').onclick=async()=>{if(await save())job(`/api/episodes/${id}/voices`,{offline:$('#offline').checked})};
+ $('#approve').onclick=async()=>{if(!await save())return;try{const r=await api(`/api/episodes/${id}/approve`,{method:'POST',body:'{}'});
+   $('#msg').textContent=r.log;await open(id);$('#msg').textContent=r.log}catch(e){$('#msg').textContent=e.message}};
+ $('#voices').onclick=async()=>{if(!await save())return;const offline=$('#offline').checked;
+   if(offline)return job(`/api/episodes/${id}/voices`,{offline:true});
+   const info=await load();const ep=info.episodes.find(x=>x.id===id);
+   if(ep.approval!=='approved'){$('#msg').textContent='Approve the script first, so voices are only made once.';return}
+   const est=await api(`/api/episodes/${id}/estimate`,{method:'POST',body:'{}'});
+   if(!est.credits){$('#msg').textContent='Every line already has its recording. Nothing to spend.';return}
+   if(confirm(`Voice ${est.log.match(/Lines to voice now: (\d+)/)[1]} lines for about ${est.credits.toLocaleString()} ElevenLabs credits?`))
+     job(`/api/episodes/${id}/voices`,{confirmed:true})};
  $('#build').onclick=async()=>{if(await save())job(`/api/episodes/${id}/build`,{captions:$('#captions').checked})};
 }
 async function save(){$('#msg').textContent='';try{await api(`/api/episodes/${cur}/script`,{method:'PUT',body:JSON.stringify({script:$('#script').value})});

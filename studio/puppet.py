@@ -32,7 +32,7 @@ import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (BGS, BIBLE, CHARS, EXPRESSIONS, MOUTHS, ep_dir, load_cast,  # noqa: E402
+from common import (BGS, BIBLE, CHARS, EXPRESSIONS, MOUTHS, ep_dir, line_key, load_cast,  # noqa: E402
                     load_env, load_episode, need_key, slug)
 
 W, H = 1280, 720
@@ -713,13 +713,13 @@ def plan_episode(ep, script, cast, fps):
                 shot["events"].append({**e, "side": side, "t": t, "dur": dur})
                 t += dur * BLOCKING[e["action"]]
                 continue
-            meta_p = audio_dir / f"{e['id']:03d}.json"
+            meta_p = audio_dir / f"{line_key(e)}.json"
             if not meta_p.exists():
                 sys.exit(f"Line {e['id']} has no audio. Run: studio.py voices {ep}")
             meta = json.loads(meta_p.read_text())
             if meta["text"] != e["text"]:
                 sys.exit(f"Line {e['id']} audio is out of date (script changed). Run: studio.py voices {ep}")
-            shot["events"].append({**e, "t": t, "dur": meta["duration"], "audio": audio_dir / f"{e['id']:03d}.mp3",
+            shot["events"].append({**e, "t": t, "dur": meta["duration"], "audio": audio_dir / f"{line_key(e)}.mp3",
                                    "mouths": mouth_track(meta, fps, cast.get("lip_sync", {}).get("min_hold_frames", 2)),
                                    "offline": meta.get("offline")})
             t += meta["duration"] + LINE_GAP

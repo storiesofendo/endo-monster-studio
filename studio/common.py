@@ -173,5 +173,28 @@ def load_episode(ep):
         sys.exit(f"Script problems in {path}:\n{e}")
 
 
+def line_key(ln):
+    """Recording file name for a line: tied to who says it and the exact words, not its position,
+    so inserting or moving lines never re-voices (and re-charges) lines that didn't change."""
+    import hashlib
+    return hashlib.sha1(f"{ln['char']}|{ln['text']}".encode()).hexdigest()[:12]
+
+
+def script_fingerprint(text):
+    import hashlib
+    norm = "\n".join(l.rstrip() for l in text.strip().splitlines())
+    return hashlib.sha1(norm.encode()).hexdigest()
+
+
+def approval_state(ep):
+    """('approved'|'changed'|'none', approved_at)"""
+    d = ep_dir(ep)
+    a, sc = d / "approved.json", d / "script.txt"
+    if not a.exists() or not sc.exists():
+        return "none", None
+    info = json.loads(a.read_text())
+    return ("approved" if info.get("fingerprint") == script_fingerprint(sc.read_text()) else "changed"), info.get("approved_at")
+
+
 def all_lines(script):
     return [e for s in script["scenes"] for e in s["events"] if e["type"] == "line"]
