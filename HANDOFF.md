@@ -17,7 +17,7 @@ future cartoons):
 - 3D CGI like Pixar. **No 2D cut-out puppets** (the `studio/puppet.py` renderer is the rejected cut-out
   approach; keep its script parsing, voice and approval pieces, drop the cut-out rendering).
 - **No video-generation services.** No ElevenLabs video, no paid image generators. She approved
-  ElevenLabs **only for voices**, on her own plan (Creator, $22/month).
+  ElevenLabs **only for voices**, on her own plan: she upgraded to Creator ($22/month, ~121,000 credits; Episode 1 needs ~7,700).
 - Voices are made once per approved script; only new or changed lines are re-voiced. Never spend
   credits without showing the estimate and getting her yes (`studio.py approve`, `estimate`, `voices --yes`).
 - Character sculpting runs **locally on her GPU** with a free, open-source, already-trained
