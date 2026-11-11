@@ -218,7 +218,8 @@ def lines_needing_voice(ep, lines):
     need = []
     for ln in lines:
         meta = out / f"{line_key(ln)}.json"
-        if not meta.exists() or json.loads(meta.read_text()).get("offline"):
+        m = json.loads(meta.read_text()) if meta.exists() else {}
+        if not m or m.get("offline") or m.get("model") != tts_model():   # made on another engine -> redo
             need.append(ln)
     return need
 
@@ -284,6 +285,7 @@ def cmd_voices(args):
             data, align = tts(ln["text"], voice_id)
             mp3.write_bytes(data)
         meta.write_text(json.dumps({"char": ln["char"], "text": ln["text"], "voice_id": voice_id,
+                                    "model": None if args.offline else tts_model(),
                                     "offline": args.offline, "duration": audio_duration(mp3),
                                     "alignment": align}, indent=1))
         print(f"  {ln['char']}: {ln['text'][:60]}")
@@ -305,7 +307,7 @@ def cmd_mixdown(args):
     script = load_episode(args.ep)
     d = ep_dir(args.ep)
     sr = 44100
-    gap_line, gap_scene, gap_break = 0.45, 1.3, 2.5
+    gap_line, gap_scene, gap_break = 0.8, 2.0, 3.0   # room to breathe between lines
     pieces, t, captions, chapters, breaks, missing = [], 1.0, [], [("0:00", "Start")], [], []
     pieces.append(np.zeros(int(sr * 1.0), np.int16))
     part = 1

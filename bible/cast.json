@@ -1,4 +1,5 @@
 {
+  "tts_model": "eleven_v4",
   "characters": {
     "NARRATOR": {
       "on_screen": false,
