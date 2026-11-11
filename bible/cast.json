@@ -64,6 +64,17 @@
         "hint": "kind calm female doctor"
       }
     },
+    "NURSE-MINDY": {
+      "on_screen": true,
+      "role": "Cheerful hospital nurse who gets Petunia ready for surgery: explains each step, the comfy gown and grippy socks, and makes the countdown feel like a game.",
+      "look": "Put her sheet in bible/sheets/ and reference in bible/characters/NURSE-MINDY/reference.png.",
+      "height": 0.82,
+      "voice": {
+        "voice_id": null,
+        "gender": "female",
+        "hint": "bubbly warm nurse, gentle, funny"
+      }
+    },
     "ENDO-MONSTER": {
       "on_screen": true,
       "role": "The sneaky, mischievous Endo-Monster who lives in Petunia's tummy. He sneaks in, peeks around corners, and tries to spoil fun with tummy twists, then gets foiled when Petunia and her friends speak up and use their brave tricks. Silly-sneaky, never truly frightening; kids can spot him before the characters do.",

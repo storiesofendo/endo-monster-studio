@@ -1,38 +1,160 @@
 TITLE: There's an Endo-Monster in My Tummy!
-# Draft episode 1. Replace lines with the book's words; keep the format.
-# FRIEND is this episode's guest Endo Warrior.
+# Episode 1 - DRAFT for the author to check against the book.
+# Target length: 10-15 minutes. Four parts with three commercial breaks.
 
-SCENE puddle: PETUNIA left, FRIEND right, ENDO-MONSTER farright
-NARRATOR: This is Petunia. Petunia loves jumping in puddles.
+# =========================== PART 1: CAPTAIN PETUNIA ===========================
+
+SCENE puddle: PETUNIA left, DAD right, ENDO-MONSTER farright
+NARRATOR: This is Petunia. Petunia is brave, Petunia is curious, and Petunia is the best paper-boat captain on Maple Street.
 @PETUNIA hop
-PETUNIA [happy]: Splash! Watch this one, it's a big one!
-FRIEND [happy]: Ha! You got my boots all wet!
+PETUNIA [happy]: Captain Petunia, ready to sail! Dad, is the ocean ready?
+DAD [happy]: The ocean is one giant puddle, Captain. Ready when you are!
+PETUNIA [happy]: Three, two, one... launch!
+NARRATOR: The little green boat bobbed across the puddle, past a sneaky leaf, around a pebble island.
+DAD [surprised]: Whoa! She's going full speed!
+PETUNIA [happy]: That's because she's the fastest boat in the whole wide puddle!
 @ENDO-MONSTER peek right
-NARRATOR: But someone sneaky was watching.
+NARRATOR: But somebody else was watching that boat. Somebody small, and fuzzy, and very, very sneaky.
 @ENDO-MONSTER sneak right
 @PETUNIA shake
-PETUNIA [hurting]: Ow. Ow, ow. My tummy hurts again.
-FRIEND [worried]: Again? Do you want to sit down?
-ENDO-MONSTER [happy]: Hee hee! That was me! I'm the Endo-Monster, and I live in your tummy!
-@FRIEND [surprised]
-PETUNIA [surprised]: You're the one who makes it hurt?
-ENDO-MONSTER [neutral]: Squeeze, twist, grumble. That's my job!
-FRIEND [neutral]: I have an Endo-Monster too. My brave trick is telling a grown-up right away.
-PETUNIA [neutral]: Then that's what I'll do.
-ENDO-MONSTER [sad]: Oh, rats. Not the grown-ups!
+PETUNIA [hurting]: Ow. Ow, ow, ow.
+DAD [worried]: Petunia? What's wrong, sweet pea?
+PETUNIA [hurting]: My tummy. It's doing the twisty thing again. Like somebody's wringing out a wet towel inside me.
+DAD [worried]: Okay. Let's sit down on the step. Breathe with me, nice and slow.
+ENDO-MONSTER [happy]: Hee hee hee! Squeeze, twist, grumble! Nobody can see me, and nobody will believe her!
 @ENDO-MONSTER exit right
+PETUNIA [sad]: The boat floated away without me.
+DAD [neutral]: Then we'll make a new one. Captains always get another boat.
 
-SCENE kitchen: MOM left, PETUNIA right
-NARRATOR: That night, Petunia told her mom everything.
-PETUNIA [sad]: Mom, there's a monster in my tummy, and it hurts a lot.
-MOM [worried]: Thank you for telling me, sweetheart. I believe you.
-MOM [neutral]: Tomorrow we'll go see a doctor who knows about tummy monsters.
+SCENE bedroom: PETUNIA center
+NARRATOR: The twisty days kept coming. Some days it was a little pinch. Some days it was so big that Petunia had to curl up in a ball.
+PETUNIA [sad]: Today is Maya's birthday party. There's a bouncy castle. And a piñata shaped like a unicorn.
+PETUNIA [hurting]: And I'm here. In bed. With my tummy.
+NARRATOR: Petunia was missing out. Missing parties. Missing recess. Missing the field trip to the aquarium.
+@PETUNIA [sad]
+PETUNIA [sad]: Everybody thinks I'm just making it up. My teacher said every kid gets tummy aches.
+BREAK
+
+# =========================== PART 2: IS IT MY FAULT? ===========================
+
+SCENE bedroom: PETUNIA left, ENDO-MONSTER farright
+NARRATOR: That night, Petunia couldn't sleep. She read her favorite book, but the words kept swimming around.
+PETUNIA [worried]: Maybe I ate too many grapes. Maybe I jumped in too many puddles. Maybe... maybe it's my fault.
+@ENDO-MONSTER peek right
+ENDO-MONSTER [happy]: Yes, yes, blame yourself! That's my favorite part!
+@ENDO-MONSTER exit right
+NARRATOR: But that sneaky monster was wrong. It was not Petunia's fault. Not one little bit.
+
+SCENE kitchen: MOM left, PETUNIA center, DAD right
+MOM [worried]: Petunia, you've been so quiet. Is your tummy hurting again?
+PETUNIA [sad]: Mom, I think there's a monster in my tummy. And I think I made it come.
+MOM [neutral]: Oh, baby. Come here. Look at me. Pain is never your fault. Never.
+DAD [neutral]: And we believe you. Every single word.
+PETUNIA [surprised]: You do?
+MOM [happy]: We do. You know your body better than anyone. When it tells you something is wrong, we listen.
+DAD [happy]: And while we listen, I brought reinforcements. One warm heating pad, and one rainbow fruit bowl.
+PETUNIA [happy]: Strawberries! And blueberries! And the banana slices are smiling!
+DAD [happy]: Every good captain needs a snack.
+MOM [neutral]: And I brought you something too. Your yellow socks.
+PETUNIA [neutral]: Why yellow?
+MOM [happy]: Yellow is a brave color. It's the color people wear to say, I see you, and you're not alone.
+MOM [neutral]: Now let me teach you a trick for the twisty times. It's called dandelion breath.
+MOM [neutral]: Pretend you're holding a dandelion. Breathe in through your nose, slowly, like you're smelling a flower.
+PETUNIA [neutral]: Mmmmm.
+MOM [neutral]: Now blow out softly through your mouth, and watch all the fluffy seeds float away.
+PETUNIA [neutral]: Fwoooooo.
+MOM [happy]: Again. In, two, three. Out, two, three, four.
+PETUNIA [happy]: It's still there, but it's a little bit smaller.
+MOM [neutral]: Dandelion breath doesn't make the monster leave. But it helps you stay the captain.
+DAD [neutral]: And tomorrow, we're going to see a doctor who knows all about tummy monsters.
+BREAK
+
+# =========================== PART 3: I HEAR YOU ===========================
 
 SCENE doctor: MOM farleft, PETUNIA left, DR-SALEM right
 @DR-SALEM enter right
-NARRATOR: Doctor Salem listened to every word.
-DR-SALEM [happy]: Hello, Petunia. Tell me all about this monster.
-PETUNIA [neutral]: Will the Endo-Monster go away?
-DR-SALEM [neutral]: We're going to learn how to keep him quiet, together.
-PETUNIA [happy]: Together. I like that.
-NARRATOR: And that was the start of Petunia's brave adventure.
+DR-SALEM [happy]: Hello, Petunia. I'm Doctor Salem. I hear you've been having some very big tummy days.
+PETUNIA [worried]: Really big ones. They twist and pinch, and sometimes I can't go to school.
+DR-SALEM [neutral]: Thank you for telling me. I hear you. And I believe you.
+PETUNIA [surprised]: You believe me? Just like that?
+DR-SALEM [happy]: Just like that. Can you point to where it hurts the most?
+PETUNIA [hurting]: Right here. Down low. And sometimes it goes all the way to my back.
+DR-SALEM [neutral]: I want to show you something. This is one of my favorite picture books.
+NARRATOR: Doctor Salem opened a big book. Inside was a drawing of a tummy, with bright little patches scattered around.
+DR-SALEM [neutral]: Sometimes, little patches grow in places inside the body where they don't belong. Doctors call it endometriosis.
+PETUNIA [surprised]: En-do-me-tri-o-sis. That's a really long word.
+DR-SALEM [happy]: It is! So lots of people just call it endo. Those patches can get sore and swollen, and that's what makes the twisty feeling.
+PETUNIA [surprised]: So it's not my fault?
+DR-SALEM [neutral]: Not even a little. You didn't eat the wrong thing or jump in the wrong puddle. It's just something some bodies have.
+PETUNIA [neutral]: So my monster has a name. Endo. The Endo-Monster.
+DR-SALEM [happy]: I like that name. And here's the good news. There are lots of ways we can help keep that monster quiet.
+DR-SALEM [neutral]: To find out exactly where those patches are hiding, I'd like to take a look with a tiny camera, during a little surgery.
+PETUNIA [worried]: Surgery? Like... cutting?
+DR-SALEM [neutral]: Just a few teeny tiny openings, smaller than your fingernail. You'll be fast asleep the whole time, and you won't feel a thing.
+MOM [neutral]: And we'll be right there when you wake up.
+PETUNIA [worried]: Can I think about it?
+DR-SALEM [happy]: Of course. Brave doesn't mean not scared. Brave means asking all your questions.
+BREAK
+
+# =========================== PART 4: SCARED AND BRAVE ===========================
+
+SCENE hospital: MOM left, PETUNIA center, NURSE-MINDY right
+NARRATOR: Surgery day came. Petunia wore a hospital gown with tiny stars on it, and her yellow socks.
+@NURSE-MINDY enter right
+NURSE-MINDY [happy]: Good morning, Captain! I'm Nurse Mindy. I heard you're the bravest sailor in the whole hospital.
+PETUNIA [worried]: I don't feel very brave. My heart is going boom, boom, boom.
+NURSE-MINDY [neutral]: That's okay. Lots of brave people have boom-boom hearts. Want me to tell you everything that's going to happen, step by step?
+PETUNIA [neutral]: Yes, please. Every step.
+NURSE-MINDY [neutral]: First, I'll put a soft sticker on your hand. Then the sleepy medicine goes in, and it'll feel like a warm blanket.
+NURSE-MINDY [neutral]: While you sleep, Doctor Salem uses her tiny camera to find the endo patches and take them out.
+NURSE-MINDY [happy]: And then you wake up in a cozy room, and your mom will be the first face you see.
+PETUNIA [worried]: Mom? Will you hold my hand?
+MOM [neutral]: I'll hold your hand until you fall asleep, and I'll hold it again the second you wake up.
+PETUNIA [neutral]: Okay. I'm scared. And I'm brave. Both at the same time.
+MOM [happy]: That's exactly what brave looks like.
+NURSE-MINDY [happy]: Ready for the countdown, Captain? Let's count backwards from ten together.
+PETUNIA [neutral]: Ten... nine... eight... I'm sailing my boat... seven... six...
+NARRATOR: And before she reached five, Petunia was fast asleep, sailing on a warm and quiet sea.
+
+SCENE hospital: MOM farleft, PETUNIA left, DAD center, DR-SALEM right
+NARRATOR: When Petunia opened her eyes, everything felt slow and fuzzy, like waking up from a long nap.
+PETUNIA [neutral]: Mom? Is it over?
+MOM [happy]: It's over, baby. You did it. I've got your hand, just like I promised.
+PETUNIA [hurting]: My tummy is sore. And my shoulders feel funny.
+DAD [neutral]: The doctor said that's normal. The funny shoulders will go away in a day or two. Heating pad, coming right up.
+@DR-SALEM enter right
+DR-SALEM [happy]: Hi, Captain. Everything went really well. We found the endo patches that were causing all that trouble, and we took them out.
+PETUNIA [happy]: So the Endo-Monster is gone forever?
+DR-SALEM [neutral]: He's a lot smaller now. Sometimes endo can come back, so we'll keep checking on you. But you'll never have to face him alone.
+@PETUNIA [happy]
+PETUNIA [happy]: I feel... relieved. Like I let out a really big dandelion breath.
+
+SCENE bedroom: PETUNIA left, ENDO-MONSTER farright
+NARRATOR: Petunia rested for many days. She watched cartoons, made paper boats, and ate a lot of smiling bananas.
+@ENDO-MONSTER peek right
+ENDO-MONSTER [sad]: Hey! Where did all my hiding spots go?
+PETUNIA [happy]: I can see you now, Endo-Monster. And I'm not scared of you anymore.
+ENDO-MONSTER [surprised]: You... you can see me?
+PETUNIA [neutral]: Yep. And next time you try a tummy twist, I'll have my dandelion breath, my heating pad, my doctor, and my family.
+ENDO-MONSTER [sad]: Oh, rats. Not the grown-ups. Not the dandelions!
+@ENDO-MONSTER exit right
+PETUNIA [neutral]: But what about all the other kids who have a monster, and nobody believes them?
+
+SCENE park: PETUNIA left, FRIEND center, MOM farleft
+NARRATOR: Petunia had an idea. A big, brave, yellow idea.
+PETUNIA [happy]: Everybody! Gather around! I'm starting a club. It's called the Endo Warriors!
+FRIEND [surprised]: What's an Endo Warrior?
+PETUNIA [happy]: An Endo Warrior is anybody who has an Endo-Monster, or loves somebody who does. We wear yellow socks so we can find each other.
+FRIEND [neutral]: I get really bad tummy days too. Sometimes I think I'm the only one.
+PETUNIA [neutral]: You're not the only one. That's the first rule of the Endo Warriors. Nobody faces their monster alone.
+PETUNIA [neutral]: Rule number two. We always believe each other.
+PETUNIA [neutral]: Rule number three. When it hurts, tell a grown-up you trust. Right away. Even if you think they won't listen.
+PETUNIA [happy]: And rule number four. Dandelion breath! In through your nose... and out.
+FRIEND [happy]: Fwoooooo!
+FRIEND [neutral]: Can I really join? I don't have yellow socks.
+PETUNIA [happy]: There's always room for you. Here, I brought an extra pair.
+MOM [happy]: Look at that. The bravest captain on Maple Street, with her very first crew.
+NARRATOR: And that was how the Endo Warriors began. One brave girl, one pair of yellow socks, and a promise that nobody would ever face their monster alone.
+@PETUNIA hop
+PETUNIA [happy]: Endo Warriors, set sail!
+NARRATOR: The end... for now.

@@ -8,6 +8,7 @@ Script format (episodes/<ep>/script.txt):
     NARRATOR: Once upon a time...
     PETUNIA [happy]: I love puddles!
     @FRIEND [worried]            <- stage direction: change a face without speaking
+    BREAK                        <- commercial break (YouTube ad spot)
     @ENDO-MONSTER sneak left     <- motion: enter/sneak/peek (from left|right), exit (to left|right), hop, shake
     FRIEND [worried]: Are you okay?
 
@@ -96,6 +97,10 @@ def parse_script(text, cast=None):
     for lineno, raw in enumerate(text.splitlines(), 1):
         line = raw.strip()
         if not line or line.startswith("#"):
+            continue
+        if line.upper() in ("BREAK", "COMMERCIAL BREAK"):
+            if scenes:
+                scenes[-1]["events"].append({"type": "break"})
             continue
         if line.upper().startswith("TITLE:"):
             title = line.split(":", 1)[1].strip()
