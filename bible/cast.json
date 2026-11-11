@@ -71,9 +71,10 @@
       "look": "Put her sheet in bible/sheets/ and reference in bible/characters/NURSE-MINDY/reference.png.",
       "height": 0.82,
       "voice": {
-        "voice_id": "ICLbfernjvQEFgkcHa3c",
+        "voice_id": "1YYt7gy3j4mdTRngvSUs",
         "gender": "female",
-        "hint": "bubbly warm nurse, gentle, funny"
+        "hint": "bubbly warm nurse, gentle, funny",
+        "voice_name": "Nurse Mindy"
       }
     },
     "ENDO-MONSTER": {
@@ -82,9 +83,10 @@
       "look": "Exactly as drawn in bible/characters/ENDO-MONSTER/reference.png (book painting style, NOT the 3D sheet): furry, left half red, right half purple, big droopy ears, small horns, orange eyes, fangs, claws.",
       "height": 0.6,
       "voice": {
-        "voice_id": "PMOAYggvZmjW1kAs7Fbw",
+        "voice_id": "Q3vcEtpJBOXHdBsEmyN2",
         "gender": "",
-        "hint": "grumbly gravelly cartoon monster, funny, raspy"
+        "hint": "grumbly gravelly cartoon monster, funny, raspy",
+        "voice_name": "Endo monster 2"
       },
       "head_fraction": 0.42
     }
