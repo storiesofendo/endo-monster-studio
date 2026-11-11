@@ -5,7 +5,7 @@ TITLE: There's an Endo-Monster in My Tummy!
 # =========================== PART 1: CAPTAIN PETUNIA ===========================
 
 SCENE puddle: PETUNIA left, DAD right, ENDO-MONSTER farright
-NARRATOR: This is Petunia. Petunia is brave, Petunia is curious, and Petunia is the best paper-boat captain on Maple Street.
+NARRATOR: This is Petunia. Petunia is brave, Petunia is curious, and Petunia is the best paper-boat captain on Duke Street.
 @PETUNIA hop
 PETUNIA [happy]: Captain Petunia, ready to sail! Dad, is the ocean ready?
 DAD [happy]: The ocean is one giant puddle, Captain. Ready when you are!
@@ -41,7 +41,7 @@ SCENE bedroom: PETUNIA left, ENDO-MONSTER farright
 NARRATOR: That night, Petunia couldn't sleep. She read her favorite book, but the words kept swimming around.
 PETUNIA [worried]: Maybe I ate too many grapes. Maybe I jumped in too many puddles. Maybe... maybe it's my fault.
 @ENDO-MONSTER peek right
-ENDO-MONSTER [happy]: Yes, yes, blame yourself! That's my favorite part!
+ENDO-MONSTER [happy]: They have no idea it's me... Back to her tummy, and let's SEE where else I can hide... They will never FIND me!
 @ENDO-MONSTER exit right
 NARRATOR: But that sneaky monster was wrong. It was not Petunia's fault. Not one little bit.
 
@@ -153,7 +153,7 @@ PETUNIA [happy]: And rule number four. Dandelion breath! In through your nose...
 FRIEND [happy]: Fwoooooo!
 FRIEND [neutral]: Can I really join? I don't have yellow socks.
 PETUNIA [happy]: There's always room for you. Here, I brought an extra pair.
-MOM [happy]: Look at that. The bravest captain on Maple Street, with her very first crew.
+MOM [happy]: Look at that. The bravest captain on Duke Street, with her very first crew.
 NARRATOR: And that was how the Endo Warriors began. One brave girl, one pair of yellow socks, and a promise that nobody would ever face their monster alone.
 @PETUNIA hop
 PETUNIA [happy]: Endo Warriors, set sail!

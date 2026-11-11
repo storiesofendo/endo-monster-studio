@@ -26,9 +26,10 @@
       "look": "Changes every episode: put this episode's guest drawing in bible/characters/FRIEND/reference.png.",
       "height": 0.6,
       "voice": {
-        "voice_id": null,
+        "voice_id": "JtVICv4wA1eHBy9mBtJm",
         "gender": "",
-        "hint": "young child, cheerful, playful"
+        "hint": "young child, cheerful, playful",
+        "voice_name": "friend 1"
       }
     },
     "MOM": {
