@@ -1,0 +1,36 @@
+{
+ "char": "PETUNIA",
+ "text": "You do?",
+ "voice_id": "YnXziUJmY9NsJ5JNgOR6",
+ "offline": false,
+ "duration": 0.862041,
+ "alignment": {
+  "chars": [
+   "Y",
+   "o",
+   "u",
+   " ",
+   "d",
+   "o",
+   "?"
+  ],
+  "starts": [
+   0.0,
+   0.093,
+   0.139,
+   0.174,
+   0.244,
+   0.29,
+   0.499
+  ],
+  "ends": [
+   0.093,
+   0.139,
+   0.174,
+   0.244,
+   0.29,
+   0.499,
+   0.836
+  ]
+ }
+}

@@ -271,6 +271,68 @@ def cmd_voices(args):
     print(f"Voices done ({len(todo)} lines made) in {out}")
 
 
+def _ts(sec, srt=False):
+    h, rem = divmod(sec, 3600)
+    m, s_ = divmod(rem, 60)
+    if srt:
+        return f"{int(h):02d}:{int(m):02d}:{int(s_):02d},{int(round((s_ % 1) * 1000)) % 1000:03d}"
+    return f"{int(h)}:{int(m):02d}:{int(s_):02d}" if h else f"{int(m)}:{int(s_):02d}"
+
+
+def cmd_mixdown(args):
+    """Join every approved line into one audio episode + chapters/ad-break times + captions."""
+    import wave
+    import numpy as np
+    script = load_episode(args.ep)
+    d = ep_dir(args.ep)
+    sr = 44100
+    gap_line, gap_scene, gap_break = 0.45, 1.3, 2.5
+    pieces, t, captions, chapters, breaks, missing = [], 1.0, [], [("0:00", "Start")], [], []
+    pieces.append(np.zeros(int(sr * 1.0), np.int16))
+    part = 1
+    for si, sc in enumerate(script["scenes"]):
+        if si:
+            pieces.append(np.zeros(int(sr * gap_scene), np.int16)); t += gap_scene
+        for e in sc["events"]:
+            if e["type"] == "break":
+                breaks.append(t); part += 1
+                pieces.append(np.zeros(int(sr * gap_break), np.int16)); t += gap_break
+                chapters.append((_ts(t), f"Part {part}"))
+                continue
+            if e["type"] != "line":
+                continue
+            mp3 = d / "audio" / f"{line_key(e)}.mp3"
+            if not mp3.exists():
+                missing.append(e["text"][:40]); continue
+            raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(mp3), "-f", "s16le", "-ac", "1", "-ar", str(sr), "-"],
+                                 capture_output=True, check=True).stdout
+            a = np.frombuffer(raw, np.int16)
+            captions.append((t, t + len(a) / sr, e["char"], e["text"]))
+            pieces += [a, np.zeros(int(sr * gap_line), np.int16)]
+            t += len(a) / sr + gap_line
+    if missing:
+        sys.exit(f"{len(missing)} lines have no recording yet (first: {missing[0]!r}). Run voices first.")
+    wav = d / f"{args.ep}_audio.wav"
+    with wave.open(str(wav), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(np.concatenate(pieces).tobytes())
+    mp3 = d / f"{args.ep}_audio.mp3"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-af", "loudnorm=I=-16:TP=-1.5:LRA=11",
+                    "-b:a", "192k", str(mp3)], check=True)
+    wav.unlink()
+    names = {"DR-SALEM": "Dr. Salem", "NURSE-MINDY": "Nurse Mindy", "ENDO-MONSTER": "Endo-Monster"}
+    with open(d / f"{args.ep}_captions.srt", "w") as f:
+        for i, (a_, b, ch, tx) in enumerate(captions, 1):
+            who = "" if ch == "NARRATOR" else names.get(ch, ch.title()) + ": "
+            f.write(f"{i}\n{_ts(a_, True)} --> {_ts(b, True)}\n{who}{tx}\n\n")
+    with open(d / f"{args.ep}_chapters.txt", "w") as f:
+        f.write(f"{script['title']}\n\nYouTube chapters (paste into the description):\n")
+        f.write("\n".join(f"{a_} {b}" for a_, b in chapters))
+        f.write("\n\nCommercial breaks (ad markers):\n" + "\n".join(_ts(b) for b in breaks) + "\n")
+    print(f"Episode audio: {mp3}  ({_ts(t)} long)")
+    print(f"Captions: {d / (args.ep + '_captions.srt')}")
+    print(f"Chapters and ad breaks: {d / (args.ep + '_chapters.txt')}")
+
+
 def cmd_samples(args):
     script = load_episode(args.ep)
     src = ep_dir(args.ep) / "audio"
@@ -320,6 +382,7 @@ def main():
     s = sub.add_parser("approve"); s.add_argument("ep"); s.set_defaults(f=cmd_approve)
     s = sub.add_parser("estimate"); s.add_argument("ep"); s.set_defaults(f=cmd_estimate)
     s = sub.add_parser("samples"); s.add_argument("ep"); s.set_defaults(f=cmd_samples)
+    s = sub.add_parser("mixdown"); s.add_argument("ep"); s.set_defaults(f=cmd_mixdown)
     s = sub.add_parser("cast"); s.set_defaults(f=cmd_cast)
     s = sub.add_parser("setvoice"); s.add_argument("char"); s.add_argument("voice_id"); s.set_defaults(f=cmd_setvoice)
     args = p.parse_args()
