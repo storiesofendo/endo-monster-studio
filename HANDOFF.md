@@ -34,10 +34,9 @@ future cartoons):
 
 ## What exists in this repo (branch `ccr-a00be2d4-hyttud`)
 - `bible/sheets/` her character sheets: PETUNIA (+ 12 story expressions), MOM, DAD, DR-SALEM, family lineup,
-  ENDO-MONSTER (3D-style sheet). `bible/cast.json`: characters, heights, roles, ElevenLabs voice IDs
-  (PETUNIA YnXziUJmY9NsJ5JNgOR6, MOM 1hJOA1O9s18kQsqo8ZL8, DR-SALEM SxLhzlOplCG52gMdYD7g,
-  ENDO-MONSTER PMOAYggvZmjW1kAs7Fbw; read from a screenshot, so verify each against her account;
-  DAD, NARRATOR, NURSE-MINDY still needed).
+  ENDO-MONSTER (3D-style sheet). `bible/cast.json`: characters, heights, roles, and every ElevenLabs voice ID (typed in by the owner):
+  PETUNIA, MOM, DAD, DR-SALEM, NURSE-MINDY, NARRATOR, ENDO-MONSTER. FRIEND is a new guest each episode (no voice yet).
+  Verify each ID against her account (free: GET /v1/voices/{id}) before the first voicing.
 - `episodes/ep01/script.txt`: full ~15 min draft of Episode 1 (4 parts, 3 `BREAK`s), awaiting her notes.
 - `studio/studio.py`: new / check / write / approve / estimate / voices (ElevenLabs, timestamps for lip-sync).
 - `studio/server.py`: local web app (episodes, script editor, approve, voice with cost confirm, build).

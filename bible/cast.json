@@ -4,7 +4,7 @@
       "on_screen": false,
       "role": "Warm, gentle storyteller who reads the book aloud.",
       "voice": {
-        "voice_id": null,
+        "voice_id": "EwcOZH7QQcxgtC0wayD9",
         "gender": "male",
         "hint": "warm calm male storyteller, friendly, audiobook narration"
       }
@@ -48,7 +48,7 @@
       "look": "Exactly as drawn in bible/characters/DAD/reference.png: short curly hair, beard, olive shirt-jacket over cream tee, dark jeans cuffed, mustard sneakers.",
       "height": 0.87,
       "voice": {
-        "voice_id": null,
+        "voice_id": "iPYHa8WMs58K3arSxZPh",
         "gender": "male",
         "hint": "warm friendly dad, gentle, playful"
       }
@@ -70,7 +70,7 @@
       "look": "Put her sheet in bible/sheets/ and reference in bible/characters/NURSE-MINDY/reference.png.",
       "height": 0.82,
       "voice": {
-        "voice_id": null,
+        "voice_id": "ICLbfernjvQEFgkcHa3c",
         "gender": "female",
         "hint": "bubbly warm nurse, gentle, funny"
       }
