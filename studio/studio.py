@@ -149,17 +149,36 @@ def ensure_voices(cast, names):
     save_cast(cast)
 
 
-def tts(text, voice_id):
+_VOICE_SETTINGS = {}
+
+
+def voice_settings(voice_id):
+    """The voice's own saved settings from the owner's ElevenLabs account (never our own guesses)."""
+    import requests
+    if voice_id not in _VOICE_SETTINGS:
+        r = requests.get(f"{ELEVEN}/voices/{voice_id}/settings", headers={"xi-api-key": need_key("ELEVENLABS_API_KEY")},
+                         timeout=60)
+        _VOICE_SETTINGS[voice_id] = r.json() if r.ok else None
+    return _VOICE_SETTINGS[voice_id]
+
+
+def tts_model():
+    return load_cast().get("tts_model", TTS_MODEL)
+
+
+def tts(text, voice_id, model=None):
     """Return (mp3 bytes, alignment dict) from ElevenLabs with character timestamps."""
     import requests
     key = need_key("ELEVENLABS_API_KEY")
-    body = {"text": text, "model_id": TTS_MODEL,
-            "voice_settings": {"stability": 0.45, "similarity_boost": 0.8, "style": 0.35, "use_speaker_boost": True}}
+    body = {"text": text, "model_id": model or tts_model()}
+    vs = voice_settings(voice_id)
+    if vs:
+        body["voice_settings"] = vs
     for attempt in range(4):
         r = requests.post(f"{ELEVEN}/text-to-speech/{voice_id}/with-timestamps",
                           params={"output_format": "mp3_44100_128"},
                           headers={"xi-api-key": key, "Content-Type": "application/json"},
-                          json=body, timeout=120)
+                          json=body, timeout=180)
         if r.status_code == 429 or r.status_code >= 500:
             time.sleep(2 ** attempt * 2)
             continue
